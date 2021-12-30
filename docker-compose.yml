@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      # The standard AMQP protocol port
+      - 5672:5672
+      # HTTP management UI
+      - 15672:15672
+    networks:
+        - go_rabbitmq
+
+  sender:
+    build: 
+      context: ./sender/
+      dockerfile: Dockerfile
+    container_name: sender
+    restart: unless-stopped
+    networks:
+      - go_rabbitmq  
+
+  reciever:
+    build:
+      context: ./reciever/
+      dockerfile: Dockerfile
+    container_name: reciever
+    restart: unless-stopped
+    networks:
+      - go_rabbitmq
+
+networks:
+  go_rabbitmq:
+    driver: bridge
