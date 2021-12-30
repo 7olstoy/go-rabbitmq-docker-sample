@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"time"
+	"fmt"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -31,16 +33,21 @@ func main() {
 	)
 	failOnError(err, "Failed to declare a queue")
 
-	body := "Hello World!"
-	err = ch.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
-		})
-	failOnError(err, "Failed to publish a message")
-	log.Printf(" [x] Sent %s\n", body)
+	i := 0
+	for true {
+		i++
+		body := fmt.Sprintf("Hello World! (%d)", i)
+		err = ch.Publish(
+			"",     // exchange
+			q.Name, // routing key
+			false,  // mandatory
+			false,  // immediate
+			amqp.Publishing{
+				ContentType: "text/plain",
+				Body:        []byte(body),
+			})
+		failOnError(err, "Failed to publish a message")
+		log.Printf(" [/\\] Sent %s\n", body)
+		time.Sleep(time.Second)
+	}
 }

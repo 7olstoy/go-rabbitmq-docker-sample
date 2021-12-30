@@ -11,4 +11,4 @@ COPY *.go ./
 
 RUN go build -o /reciever
 
-CMD sleep 20 && /reciever
+CMD sleep 25 && /reciever
