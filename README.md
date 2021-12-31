@@ -1,14 +1,12 @@
-Go apps with RabbitMQ sample in docker-compose.
-
-# About
-Two small dockerized apps in Go and message broker RabbitMQ.
+Docker-compose stand with RabbitMQ and sender/reciever.
+---
+## About
 First app is a producer that sends messages (1 per second / while-true loop), the second one is a consumer that receives messages and prints them out.
 
----
-# Requirements
+## Requirements
 * Docker-compose
 
-# How to run
+## How to run
 ```
 git clone https://github.com/7olstoy/go-rabbitmq-docker-sample
 cd go-rabbitmq-docker-sample
@@ -16,7 +14,7 @@ docker-compose up
 ```
 After, you can check RabbitMQ internal dashboard at ```http://localhost:15672```.
 
-# Version with grafana dashboard and monitoring
+## Version with grafana dashboard and monitoring
 ```
 git clone https://github.com/7olstoy/go-rabbitmq-docker-sample
 cd go-rabbitmq-docker-sample
@@ -24,6 +22,6 @@ docker-compose -f docker-compose.monitoring.yml up
 ```
 After, you can check Grafana RabbitMQ dashboard at ```http://localhost:3000``` and admin:admin credentials. 
 
-# Links
+## Links
 * Go code from [official](https://www.rabbitmq.com/tutorials/tutorial-one-go.html) rabbitmq docs.
 * Grafana dashboards from [official](https://github.com/rabbitmq/rabbitmq-server/tree/master/deps/rabbitmq_prometheus/docker/grafana) rabbitmq repo.
