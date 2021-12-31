@@ -1,0 +1,66 @@
+version: "3.7"
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.8-management-alpine
+    restart: unless-stopped
+    ports:
+      # The standard AMQP protocol port
+      - 5672:5672
+      # Prometheus metrics
+      - 15692:15692
+    networks:
+      - go_rabbitmq
+
+  sender:
+    container_name: sender
+    build: 
+      context: ./sender/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - go_rabbitmq  
+
+  reciever:
+    container_name: reciever
+    build:
+      context: ./reciever/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - go_rabbitmq
+
+  victoriametrics:
+    container_name: victoriametrics
+    image: victoriametrics/victoria-metrics:v1.71.0
+    expose:
+      - 8428
+    command:
+      - '-storageDataPath=/storage'
+      - '-httpListenAddr=:8428'
+      - '-promscrape.config=/prometheus.yml'
+    volumes:
+      - ./monitoring/prometheus.yml:/prometheus.yml
+    restart: unless-stopped
+    networks:
+      - go_rabbitmq  
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:8.3.2
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+    volumes:
+      - ./monitoring/grafana/dashboards:/dashboards
+      - ./monitoring/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+      - ./monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
+    restart: unless-stopped
+    networks:
+      - go_rabbitmq
+
+networks:
+  go_rabbitmq:
+    driver: bridge

@@ -14,7 +14,16 @@ git clone https://github.com/7olstoy/go-rabbitmq-docker-sample
 cd go-rabbitmq-docker-sample
 docker-compose up
 ```
-After, you can check RabbitMQ dashboard at ```http://localhost:15672```.
+After, you can check RabbitMQ internal dashboard at ```http://localhost:15672```.
+
+# Version with grafana dashboard and monitoring
+```
+git clone https://github.com/7olstoy/go-rabbitmq-docker-sample
+cd go-rabbitmq-docker-sample
+docker-compose -f docker-compose.monitoring.yml up
+```
+After, you can check Grafana RabbitMQ dashboard at ```http://localhost:3000``` and admin:admin credentials. 
 
 # Links
-Go code used from [official](https://www.rabbitmq.com/tutorials/tutorial-one-go.html) rabbitmq docs.
+* Go code from [official](https://www.rabbitmq.com/tutorials/tutorial-one-go.html) rabbitmq docs.
+* Grafana dashboards from [official](https://github.com/rabbitmq/rabbitmq-server/tree/master/deps/rabbitmq_prometheus/docker/grafana) rabbitmq repo.
