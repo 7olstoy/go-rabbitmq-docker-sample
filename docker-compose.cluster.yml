@@ -1,14 +1,44 @@
 version: "3.7"
 services:
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.8-management-alpine
+  rabbitmq-1:
+    container_name: rabbitmq-1
+    hostname: rabbitmq-1
+    image: rabbitmq:3.9.11-management-alpine
     restart: unless-stopped
+    networks:
+      go_rabbitmq:
+        aliases:
+          - rabbitmq
     #ports:
     #  # The standard AMQP protocol port
     #  - 5672:5672
     #  # Prometheus metrics
     #  - 15692:15692
+    #  # Erlang distribution server port (federation or CLI tools)
+    #  - 25672:25672
+    volumes:
+      - "./cluster/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf"
+      - "./cluster/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
+
+  rabbitmq-2:
+    container_name: rabbitmq-2
+    hostname: rabbitmq-2
+    image: rabbitmq:3.9.11-management-alpine
+    restart: unless-stopped
+    volumes:
+      - "./cluster/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf"
+      - "./cluster/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
+    networks:
+      - go_rabbitmq
+
+  rabbitmq-3:
+    container_name: rabbitmq-3
+    hostname: rabbitmq-3
+    image: rabbitmq:3.9.11-management-alpine
+    restart: unless-stopped
+    volumes:
+      - "./cluster/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf"
+      - "./cluster/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
     networks:
       - go_rabbitmq
 
@@ -33,14 +63,14 @@ services:
   victoriametrics:
     container_name: victoriametrics
     image: victoriametrics/victoria-metrics:v1.71.0
-    expose:
-      - 8428
+    #ports:
+    #  - 8428:8428
     command:
       - '-storageDataPath=/storage'
       - '-httpListenAddr=:8428'
       - '-promscrape.config=/prometheus.yml'
     volumes:
-      - ./monitoring/prometheus.yml:/prometheus.yml
+      - ./cluster/prometheus.yml:/prometheus.yml
     restart: unless-stopped
     networks:
       - go_rabbitmq  

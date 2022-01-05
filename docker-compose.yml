@@ -4,11 +4,11 @@ services:
     image: rabbitmq:3.8-management-alpine
     container_name: rabbitmq
     restart: unless-stopped
-    ports:
-      # The standard AMQP protocol port
-      - 5672:5672
-      # HTTP management UI
-      - 15672:15672
+    #ports:
+    #  # The standard AMQP protocol port
+    #  - 5672:5672
+    #  # HTTP management UI
+    #  - 15672:15672
     networks:
         - go_rabbitmq
 
