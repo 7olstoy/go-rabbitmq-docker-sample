@@ -1,10 +1,10 @@
-FROM golang:1.16-alpine
+FROM golang:1.17.5-alpine
 
 WORKDIR /app
 
 COPY go.mod ./
 COPY go.sum ./
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh .
+
 RUN go mod download
 
 COPY *.go ./
